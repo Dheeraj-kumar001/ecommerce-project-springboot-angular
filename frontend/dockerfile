@@ -1,0 +1,26 @@
+# Stage 1: Build Angular app
+FROM node:18 AS build
+
+WORKDIR /app
+
+# First copy only package files for better caching
+COPY package*.json ./
+
+# Install dependencies with legacy peer deps flag for compatibility
+RUN npm install @ng-bootstrap/ng-bootstrap@15.1.0
+RUN npm install
+
+# Copy all other files
+COPY . .
+
+# Build Angular app with production configuration
+RUN npm run build -- --configuration=production
+
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
+# Copy built Angular files
+COPY --from=build /app/dist/angular-ecommerce /usr/share/nginx/html
+# Expose port 80
+EXPOSE 80
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
