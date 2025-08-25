@@ -1,0 +1,33 @@
+# buils stage
+
+FROM maven:3.9.3-eclipse-temurin-20 AS build
+
+WORKDIR /app
+
+# copy pom.xml first foer caching dependencies
+
+COPY pom.xml .
+
+# download dependencies  offline
+RUN mvn dependency:go-offline -B
+
+# copy source code
+COPY src ./src
+
+# package application
+RUN mvn clean package -DskipTests
+
+# Run stage
+FROM eclipse-temurin:20-jdk-alpine
+
+WORKDIR /app
+
+# copy the packaged jar
+COPY --from=build /app/target/*.jar app.jar
+
+#expose spring boot port
+
+
+
+# start spring boot applicaton
+ENTRYPOINT ["java", "-jar", "app.jar"]
