@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: ecommerce  
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: 430500291162.dkr.ecr.us-east-2.amazonaws.com/nikki-rg:springboot-app-latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090
+      
+          env:
+          - name: SERVER_PORT
+            value: "8090"  
+          - name: SPRING_DATASOURCE_URL
+            value:  "jdbc:mysql://mysql.ecommerce.svc.cluster.local:3306/ecommerce_db?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: username
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: password
+          - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+            value: "com.mysql.cj.jdbc.Driver"
+          - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+            value: "org.hibernate.dialect.MySQL8Dialect"
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: "update"
+          - name: SPRING_DATA_REST_BASE_PATH
+            value: "/api"
+          - name: SERVER_PORT
+            value: "8090"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: ecommerce  
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 8090
+      targetPort: 8090
+  type: ClusterIP
