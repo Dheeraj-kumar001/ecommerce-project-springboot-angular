@@ -9,6 +9,10 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+     # Health check configs
+    alb.ingress.kubernetes.io/healthcheck-path: /   # default for frontend
+    alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
 
 spec:
   ingressClassName: alb
@@ -23,7 +27,7 @@ spec:
             name: frontend
             port:
               number: 80
-      - path: /api
+      - path:  /actuator/health
         pathType: Prefix
         backend:
           service:
