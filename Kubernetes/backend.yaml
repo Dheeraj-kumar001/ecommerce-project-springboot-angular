@@ -43,8 +43,23 @@ spec:
             value: "update"
           - name: SPRING_DATA_REST_BASE_PATH
             value: "/api"
-          - name: SERVER_PORT
-            value: "8090"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8090
+            initialDelaySeconds: 120  # Spring Boot को startup के लिए पर्याप्त time दें
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8090
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
           resources:
             requests:
               memory: "512Mi"
