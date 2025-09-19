@@ -12,6 +12,8 @@ The application consists of:
 
 ## 🏗️ Architecture Diagram
 ![Architecture Diagram](./deepseek_mermaid_20250816_946552.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b09b6415-a3f8-415a-b001-d01c931cf850" />
+
 
 ---
 
