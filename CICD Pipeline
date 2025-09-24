@@ -1,0 +1,140 @@
+@Library('my-shared-lib') _
+pipeline {
+    agent any 
+
+    environment {
+        SONAR_HOME = tool "sonar"
+        DOCKER_REGISTRY_DH = "dock2o"
+        DOCKER_TAG = "latest"
+        NODE_HOME = "/usr/local/nodejs/node-v18"  
+        PATH = "${env.NODE_HOME}/bin:${env.PATH}"
+    }
+    tools {
+        nodejs "NodeJS-18"
+    }
+
+    stages {
+        
+        stage('Check Node.js') {
+            steps {
+                script {
+                    sh 'node -v'
+                    sh 'npm -v'
+                }
+            }
+        }
+
+        stage("Workspace cleanup") {
+            steps {
+                script {
+                    cleanWs()
+                }
+            }
+        }
+
+        stage('Git: Code Checkout') {
+            steps {
+                script {
+                    code_checkout("https://github.com/Dheeraj-kumar001/ecommerce-project-springboot-angular.git","master")
+                }
+            }
+        }
+
+        stage("Trivy: Filesystem scan") {
+            steps {
+                script {
+                    trivy_scan()
+                }
+            }
+        }
+
+        stage("SonarQube: Code Analysis") {
+            steps {
+                timeout(time: 60, unit: 'MINUTES') {
+                    withEnv(["JAVA_OPTS=-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=86400"]) {
+                        script {
+                            sonarqube_analysis("sonar", "ecommerce", "ecommerce")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage("SonarQube: Code Quality Gates") {
+            steps {
+                timeout(time: 40, unit: 'MINUTES') {
+                    withEnv(["JAVA_OPTS=-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=86400"]) {
+                        script {
+                            sonarqube_code_quality()
+                        }
+                    }
+                }
+            }
+        }
+
+        stage("OWASP: Dependency check") {
+            steps {
+                script {
+                    owasp_dependency()
+                }
+            }
+        }
+
+        stage('Exporting environment variables') {
+            parallel {
+                stage("Backend env setup") {
+                    steps {
+                        script {
+                            dir("Automations") {
+                                sh "bash updatebackendnew.sh"
+                            }
+                        }
+                    }
+                }
+
+                stage("Frontend env setup") {
+                    steps {
+                        script {
+                            dir("Automations") {
+                                sh "bash updatefrontendnew.sh"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage("Docker: Build Images") {
+            steps {
+                script {
+                    dir('backend') {
+                        docker_build("ecommerce-springboot-angular-application","${params.BACKEND_DOCKER_TAG}","dock2o")
+                    }
+                    dir('frontend') {
+                        docker_build("ecommerce-springboot-angular-application","${params.FRONTEND_DOCKER_TAG}","dock2o")
+                    }
+                }
+            }
+        }
+
+        stage("Docker: Push to DockerHub") {
+            steps {
+                script {
+                    docker_push("ecommerce-springboot-angular-application","${params.BACKEND_DOCKER_TAG}","dock2o") 
+                    docker_push("ecommerce-springboot-angular-application","${params.FRONTEND_DOCKER_TAG}","dock2o")
+                }
+            }
+        }
+
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: '*.xml', followSymlinks: false
+            build job: "ecommerce-CD", parameters: [
+                string(name: 'FRONTEND_DOCKER_TAG', value: "${params.FRONTEND_DOCKER_TAG}"),
+                string(name: 'BACKEND_DOCKER_TAG', value: "${params.BACKEND_DOCKER_TAG}")
+            ]
+        }
+    }
+}
