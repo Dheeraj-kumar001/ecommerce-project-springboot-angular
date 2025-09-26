@@ -35,12 +35,6 @@ The application consists of:
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dea13b6d-ff65-4aac-862c-2dffd401621a" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5196b472-d7d5-4916-b0a9-a23108e76cf1" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/db331bd4-3680-4e40-a8de-1e6903574515" />
-
-
-
-
-
-
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d831feee-0048-451c-a7ea-9838bbe570a5" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b6bcd90f-f106-454a-8a73-51705fc186f6" /> 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/528c6af8-f4e2-4c60-8cb5-79b81d3d009b" />
