@@ -3,7 +3,7 @@ pipeline {
     agent any 
 
     environment {
-        SONAR_HOME = tool "sonar"
+        SONAR_HOME = tool "Sonar"
         DOCKER_REGISTRY_DH = "dock2o"
         DOCKER_TAG = "latest"
         NODE_HOME = "/usr/local/nodejs/node-v18"  
