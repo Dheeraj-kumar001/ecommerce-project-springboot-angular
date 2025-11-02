@@ -92,7 +92,7 @@ pipeline {
                     }
                 }
 
-                stage("Frontend env setup") {
+                stage("Frontend  setup") {
                     steps {
                         script {
                             dir("Automations") {
