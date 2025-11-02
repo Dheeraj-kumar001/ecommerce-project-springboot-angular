@@ -111,7 +111,7 @@ pipeline {
                         docker_build("ecommerce-springboot-angular-application","${params.BACKEND_DOCKER_TAG}","dock2o")
                     }
                     dir('frontend') {
-                        docker_build("ecommerce-springboot-angular-application","${params.FRONTEND_DOCKER_TAG}","dock2o")
+                        docker_build("ecommerce-springboot-angular-application","${params.FRONTEND_D
                     }
                 }
             }
