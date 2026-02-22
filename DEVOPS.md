@@ -37,26 +37,65 @@ In this project, an IAM User was created to securely manage programmatic access 
 - AmazonEBSCSIDriverPolicy
 - AWSLoadBalancerControllerIAMPolicy
 - elasticloadbalancing:DescribeListenerAttribute
-- 
+  
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/41eee5e7-4462-4ee9-8535-e1dff5fea839" />
 Created an access key to enable programmatic access for AWS CLI and Terraform to provision and manage the EKS cluster.
+
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/22082ca1-2e14-4cd3-a4b9-4b957dd91ecd" />
+
 AWS CloudFormation was used to provision the EKS cluster infrastructure in an automated and repeatable manner.
+
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/58059642-02b8-46f9-be8f-1e52cdbfb387" />
+
 The Load Balancer distributes incoming traffic across Kubernetes pods and continuously monitors their health status.
-## Traffic Flow (Ingress + ALB Workflow)
+## Traffic Flow (Ingress + ALB Workflow):
 - User sends request to ALB DNS endpoint
 - ALB receives the request
 - Listener rules (based on host/path) evaluate the request
 - Traffic is forwarded to the Target Group
 - Target Group routes traffic to healthy Kubernetes pods
 - Health checks continuously monitor pod status
+  
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dea13b6d-ff65-4aac-862c-2dffd401621a" />
+
+ArgoCD continuously monitors the Git repository and ensures that the Kubernetes cluster state matches the desired configuration stored in Git.
+## ArgoCD Workflow:
+- Developer pushes updated Kubernetes manifests to GitHub repository
+- ArgoCD continuously monitors the Git repository
+- When changes are detected, ArgoCD compares:
+   Desired state (Git)
+   Live state (EKS cluster)
+- If drift is detected:
+   ArgoCD automatically syncs the cluster
+   Applies updated manifests
+- Application gets deployed or updated in the EKS cluster
+  
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d831feee-0048-451c-a7ea-9838bbe570a5" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b6bcd90f-f106-454a-8a73-51705fc186f6" /> 
+
+Prometheus collects real-time metrics from pods and allows querying resource usage such as CPU, memory, and network traffic.
+## What This Query Does:
+- container_network_receive_bytes_total → Tracks total received network bytes
+- [5m] → Calculates rate over last 5 minutes
+- rate() → Computes per-second average
+- sum() by (pod) → Groups results per pod
+📊 Observations from Dashboard
+- Real-time traffic spikes visible
+- Per-pod network utilization tracked
+- Helps identify load patterns
+- Useful for debugging performance issues
+  
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/528c6af8-f4e2-4c60-8cb5-79b81d3d009b" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f5eb3982-16ee-49d7-a8ee-4d86e6b0d277" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d9cf1297-4e76-4ad2-8f8d-506082c3c805" />
+
+A custom Grafana dashboard panel was created using Prometheus as the data source.
+## What This Dashboard Shows:
+- real-time pod metrics
+- Resource consumption trends
+- Performance spikes
+- Traffic distribution
+- Helps identify anomalies quickly
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b6bcd90f-f106-454a-8a73-51705fc186f6" /> 
+
+
 
 
 
