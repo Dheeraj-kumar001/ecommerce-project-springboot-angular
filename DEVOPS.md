@@ -29,12 +29,29 @@ The application consists of:
 - 💻 **Application Stack:** Angular (Frontend), Spring Boot (Backend), MySQL (Database)
 
 ---
+In this project, an IAM User was created to securely manage programmatic access to AWS resources required for provisioning and managing the EKS cluster.
+## Required policies like:
+- AmazonEKSClusterPolicy
+- AmazonEKSWorkerNodePolicy
+- AmazonEC2FullAccess (if needed)
+- AmazonEBSCSIDriverPolicy
+- AWSLoadBalancerControllerIAMPolicy
+- elasticloadbalancing:DescribeListenerAttribute
+- 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/41eee5e7-4462-4ee9-8535-e1dff5fea839" />
+Created an access key to enable programmatic access for AWS CLI and Terraform to provision and manage the EKS cluster.
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/22082ca1-2e14-4cd3-a4b9-4b957dd91ecd" />
+AWS CloudFormation was used to provision the EKS cluster infrastructure in an automated and repeatable manner.
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/58059642-02b8-46f9-be8f-1e52cdbfb387" />
+The Load Balancer distributes incoming traffic across Kubernetes pods and continuously monitors their health status.
+## Traffic Flow (Ingress + ALB Workflow)
+- User sends request to ALB DNS endpoint
+- ALB receives the request
+- Listener rules (based on host/path) evaluate the request
+- Traffic is forwarded to the Target Group
+- Target Group routes traffic to healthy Kubernetes pods
+- Health checks continuously monitor pod status
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/dea13b6d-ff65-4aac-862c-2dffd401621a" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5196b472-d7d5-4916-b0a9-a23108e76cf1" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/db331bd4-3680-4e40-a8de-1e6903574515" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d831feee-0048-451c-a7ea-9838bbe570a5" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b6bcd90f-f106-454a-8a73-51705fc186f6" /> 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/528c6af8-f4e2-4c60-8cb5-79b81d3d009b" />
